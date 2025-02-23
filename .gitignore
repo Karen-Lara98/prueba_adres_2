@@ -1,0 +1,36 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+.env/
+.venv/
+
+# SQLite database
+*.db
+*.sqlite3
+db.sqlite3
+
+# VS Code
+.vscode/
+.history/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
