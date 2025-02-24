@@ -73,18 +73,52 @@ def create_table(conn):
 # Función para extraer información de un archivo PDF
 def extract_pdf_info(file_path):
     """
+    Documentación de la función extract_pdf_info
     Extrae información del PDF:
        - Nombre del archivo
        - Número de páginas
        - CUFE
        - Peso del archivo en bytes
+
+    Validaciones añadidas:
+    1. Verifica que el archivo tenga la extensión .pdf
+    2. Verifica que el archivo contenga la firma PDF (%PDF-)
     """
+
     # Obtener el nombre del archivo y el tamaño
-    file_name = os.path.basename(file_path)
-    file_size = os.path.getsize(file_path)
-    
+    file_name = os.path.basename(file_path) # Nombre del archivo
+    file_size = os.path.getsize(file_path) # Tamaño del archivo en bytes
+
+    # Validar que el archivo tenga extensión .pdf
+    if not file_path.lower().endswith('.pdf'):
+        # Mostrar un mensaje si el archivo no es un PDF
+        print(f"El archivo {file_name} no tiene extensión PDF.")
+        # Retornar información vacía
+        return file_name, 0, None, file_size
+
+    # Validar la firma del archivo (cabecera PDF)
+    try:
+        # Leer los primeros 5 bytes del archivo
+        with open(file_path, 'rb') as f:
+            # 5 bytes del archivo
+            header = f.read(5)
+            
+        # Verificar si el archivo tiene la firma PDF correcta
+        if header != b'%PDF-':
+            # Mostrar un mensaje si el archivo no tiene la firma PDF correcta
+            print(f"El archivo {file_name} no tiene la firma PDF correcta. No es un PDF válido.")
+            # Retornar información vacía
+            return file_name, 0, None, file_size
+    # Manejar errores al leer el archivo
+    except Exception as e:
+        # Mostrar un mensaje si hay un error al leer el archivo
+        print(f"Error al leer el archivo {file_name}: {e}")
+        # Retornar información vacía
+        return file_name, 0, None, file_size
+
     # Inicializar las variables
     try:
+        # Abrir el archivo PDF con PyMuPDF
         with fitz.open(file_path) as pdf:
             # Obtener el número de páginas del PDF
             num_pages = pdf.page_count
@@ -92,16 +126,24 @@ def extract_pdf_info(file_path):
             cufe = None
             # Buscar el CUFE en cada página del PDF
             for page_num in range(num_pages):
+                # Obtener el texto de la página
                 page = pdf[page_num]
+                # Extraer el texto de la página
                 text = page.get_text("text")
+                # Buscar el CUFE en el texto de la página
                 match = re.search(CUFE_REGEX, text)
                 # Si se encuentra el CUFE, se almacena y se sale del bucle
                 if match:
+                    # Almacenar el CUFE encontrado
                     cufe = match.group(0).replace("\n", "")
+                    # Sale del bucle
                     break
-    # Manejar errores al abrir el archivo
+                
+    # Manejar errores al abrir o procesar el archivo
     except Exception as e:
+        # Mostrar un mensaje si hay un error al procesar el archivo
         print(f"Error al procesar el archivo {file_name}: {e}")
+        # Retornar información vacía
         return file_name, 0, None, file_size
 
     # Retornar la información extraída
