@@ -102,4 +102,4 @@ Si se encuentra que los datos de un archivo ya existen en la base de datos, se p
 
 ![DB](static/funcional_1.png)
 
-En este caso usé una extensión que se llama SQLite Viewer https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer para poder visualizar el cómo mi base de datos se veía afectada después de correr el script.
+En este caso usé una extensión que se llama [SQLite Viewer](https://marketplace.visualstudio.com/items?itemName=qwtel.sqlite-viewer) para poder visualizar cómo mi base de datos se veía afectada después de correr el script.
